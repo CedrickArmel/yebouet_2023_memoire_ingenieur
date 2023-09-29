@@ -1,0 +1,233 @@
+\chapter{Codes python} \label{annexe:codes_python}
+
+\section{Calcul de la valeur de shapley} \label{ansec:shapley_compute}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def calculate_shapley(Kg: pd.DataFrame, Bn: float, Players: dict,
+                      id_columns: list = None, K: int = 10): # O(K * m * n * k)
+    kg = Kg.copy()
+    date_columns = kg.select_dtypes(include='datetime64').columns.tolist()
+    try:
+        to_drop = date_columns + id_columns
+        kg = kg.drop(to_drop, axis=1)
+    except TypeError:
+        to_drop = date_columns
+        kg = kg.drop(to_drop, axis=1)
+    kg = impute_categorical_modes(kg)
+    kg = impute_floats_mode(kg)
+    ply = list(Players.keys())
+    m = len(ply)
+    shapley_value = initialiser_dictionnaire(ply)
+    # for each sample
+    for _ in range(K):
+        coalition = np.random.choice(ply, size=np.random.randint(2, m + 1),
+                                     replace=False)
+        features = []
+        for player in coalition:
+            features += Players[player]
+        try :
+            coalition_av = shannon_kg(kg[features])*Bn  # av=accuracy value
+        except KeyError :
+            coalition_av = 0
+        for player in coalition:
+            coalition_without_player = [p for p in coalition if p != player]
+            features_wh_player = []
+            for player in coalition_without_player:
+                features_wh_player += Players[player]
+            dataset_ft_wp_val = kg[features_wh_player]
+            coalition_wp_av = shannon_kg(dataset_ft_wp_val)*Bn
+            contribution = coalition_av - coalition_wp_av
+            shapley_value[player] += contribution / K
+    return shapley_value
+\end{minted}
+\caption{Cacul de la valeur de shapley}
+\label{code:shapley_compute}
+\end{listing}
+
+
+\section{Calcul de l'entropie de shannon sur dataset} \label{ansec:shannon_compute}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def shannon_kg(Kg: pd.DataFrame): # O(n * m * k)
+    data = Kg.copy()
+    cat_data = impute_categorical_modes_shannon(data).values
+    num_data = impute_floats_mode_shannon(data).values
+    entropies = []
+    try:
+        n_numcolumns = num_data.shape[1]
+    except IndexError:
+        n_numcolumns = 1
+    try:
+        n_catcolumns = cat_data.shape[1]
+    except IndexError:
+        n_catcolumns = 1
+    try:
+        n_rows = data.shape[0]
+    except IndexError:
+        n_rows = 1
+    for i in range(n_numcolumns):
+        arr = num_data[:, i]
+        freq = np.histogram(arr, bins='doane', density=False)[0]/n_rows
+        if freq.shape[0] <= 1:
+            e_i = 0
+        else:
+            e_i = shannon(freq, base=2) / np.log2(freq.shape[0])
+        entropies.append(e_i)
+    for i in range(n_catcolumns):
+        arr = cat_data[:, i]
+        counter = Counter(arr)
+        total_count = len(arr)
+        freq = [count / total_count for count in counter.values()]
+        if len(counter) <= 1:
+            e_i =0
+        else:
+            e_i = shannon(freq, base=2) / np.log2(len(counter))
+        entropies.append(e_i)
+    entropy = np.array(entropies).mean()
+    return entropy
+\end{minted}
+\caption{Calcul de l'entropie de shannon sur dataset}
+\label{code:shannon_compute}
+\end{listing}
+
+\section{Fonction d'altération} \label{ansec:alloc_compute}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def alloc_func(Bn: float, Pn: float, Kg: pd.DataFrame): # O(n * m * k * log(k))
+    
+    try:
+        Theta = min(Bn/Pn, 1)
+    except ZeroDivisionError :
+        Theta = 0
+    
+    Theta = 1-Theta
+    kg = Kg.copy()
+    num_columns = kg.select_dtypes(include=['float']).columns
+    cat_columns = kg.select_dtypes(include=['object', 'int']).columns
+    for col in num_columns:
+        arr = kg[col].values
+        sample = arr[~np.isnan(arr)]
+        h = np.histogram(sample, bins='doane', density=False)
+        arr = num_to_nan(arr, h, Theta)
+        kg[col] = arr
+
+    for col in cat_columns:
+        arr = kg[col].values
+        arr = cat_to_nan(arr, Theta)
+        kg[col] = arr
+
+    return kg
+\end{minted}
+\caption{Fonction d'allocation}
+\label{code:alloc_compute]}
+\end{listing}
+
+\section{Calcul de la valeur de la connaissance} \label{ansec:vkg_compute}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def calculate_vkg(Kg: pd.DataFrame, Bn: float, Pn: float): # O(n * m * k + p)
+    a = round(Bn*shannon_kg(Kg), 3)
+
+    def integrand(x):
+        kg = alloc_func(x, Pn, Kg)
+        e = shannon_kg(kg)
+        return e
+
+    b = round(quad(integrand, 0, Bn)[0], 3)
+
+    return {'vkg*':a - b, 'bn*Hk':a, 'integrale':b}
+\end{minted}
+\caption{Calcul de la valeur de la connaissance}
+\label{code:vkg_compute}
+\end{listing}
+
+
+\section{Mise à jour du prix de réserve : Marketplace} \label{ansec:priceupdate_compute}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def marketplace(Kg: pd.DataFrame, Bnet: list, delta: float,
+                Players: dict, Id_columns: list = None, step: int = 10,
+                K: int = 10): # O(step * (n * m * k + K * m * n * k + len(Bnet) * (n * m * k + p)))
+
+    experts = dict(w=[1]*len(Bnet),
+                   c=Bnet.copy())
+    Bmax = np.max(Bnet)
+    steps = {}
+    
+    for i in range(step):
+        bn = np.random.choice(Bnet, size=1)[0]
+        Wn = np.sum(np.array(experts['w']))
+        pn = random.choices(experts['c'], experts['w'])[0]
+        kg = alloc_func(bn, pn, Kg.copy())
+        # theta = round(min(bn/pn, 1), 2)
+        vkg = calculate_vkg(kg, bn, pn)
+        contribution = calculate_shapley(kg, bn, Players, Id_columns, K)
+        for i, ci in enumerate(experts['c']) :
+            g_in = calculate_vkg(Kg.copy(), bn, ci)['vkg*']/Bmax
+            experts['w'][i] = experts['w'][i]*(1+delta*g_in)
+        steps[f"step_{i}"] = dict(contributions = contribution,
+                                  vkg_k = vkg,
+                                  Pn = pn,
+                                  Bn = bn)   
+    return steps
+\end{minted} [H]
+\caption{Code de mise jour du prix de réserve - Marketpalce}
+\label{code:priceupdate_compute}
+\end{listing}
+
+
+\section{Autres} \label{ansec:autres}
+\begin{listing} [H]
+\begin{minted}[
+frame=lines,
+framesep=2mm,
+baselinestretch=1.2,
+fontsize=\footnotesize,
+linenos
+]{python}
+def generate_dataframe(num_columns, num_rows, seed_value: int=7):
+    np.random.seed(seed_value)
+    data = {}
+    for i in range(1, num_columns + 1):
+        column_name = f"data_{i}"
+        variance = np.random.uniform(1, 10)  # Génère une variance aléatoire entre 1 et 10
+        data[column_name] = np.random.normal(scale=np.sqrt(variance), size=num_rows)
+    
+    df = pd.DataFrame(data)
+    return df
+\end{minted}
+\caption{Code pour générer des données}
+\label{code:data_gen}
+\end{listing}
+
+

@@ -1,0 +1,156 @@
+%\documentclass[a4paper]{book}
+\documentclass[12pt,a4paper]{report}
+%\documentclass[a4paper]{article}
+% *********************** Packages ******************************
+\usepackage{minitoc}
+\usepackage{tcolorbox}
+\usepackage{setspace}
+\usepackage{appendix}
+\usepackage{graphicx} % Required for inserting images
+%\usepackage[backend=biber]{biblatex}
+\usepackage[style=apa]{biblatex}
+\usepackage{amsmath}
+\usepackage{bbold}
+\usepackage{hyperref}
+\usepackage{dsfont}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage[ruled,linesnumbered]{algorithm2e}
+\usepackage{listings}
+\usepackage[french]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage{titlesec}
+\usepackage{titletoc}
+\usepackage{float}
+
+\usepackage{etoolbox} % Package for patching
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+%\usepackage{natbib}
+
+%\usepackage{nomencl}
+%\usepackage{fancyhdr}
+%\usepackage{unicode-math}
+%\usepackage{caption}
+%\usepackage{mdframed}
+%\usepackage{ulem}
+%\usepackage{indentfirst}
+
+% *********************** Style document ******************************
+%\onehalfspacing
+
+\setcounter{secnumdepth}{4} 
+\setstretch{1.15}
+\usepackage[left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\addbibresource{references.bib}
+\usemintedstyle{borland}
+
+
+%\titlespacing*{\section}{0pt}{*0}{*0}
+%\titlespacing*{\subsection}{0pt}{*0}{*0}
+%\titlespacing*{\subsubsection}{0pt}{*0}{*0}
+
+
+\makeatletter
+\renewcommand\listingscaption{Code}
+\makeatother
+
+\BeforeBeginEnvironment{listing}{\vspace{-\baselineskip}} % Reduce space before
+\AfterEndEnvironment{listing}{\vspace{-0.5\baselineskip}} % Reduce space after
+%\BeforeBeginEnvironment{minted}{\vspace{-\baselineskip}} % Reduce space before
+%\AfterEndEnvironment{minted}{\vspace{-0.5\baselineskip}} % Reduce space after
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{green},
+    stringstyle=\color{red},
+    numbers=left,
+    numberstyle=\tiny,
+    stepnumber=1,
+    numbersep=5pt,
+    backgroundcolor=\color{white},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    tabsize=2,
+    captionpos=b,
+    breaklines=true,
+    breakatwhitespace=false,
+    escapeinside={\%*}{*)},
+    belowskip=0pt,
+    aboveskip=2pt,
+    framexleftmargin=2pt,
+    xleftmargin=2pt,
+    framexrightmargin=2pt,
+    xrightmargin=2pt,
+}
+
+
+% *********************** Début du document ******************************
+%*****************************************************************************
+%*********************************************************************************
+\begin{document}
+% *********************** Page de garde ******************************
+% PREAMBULE
+\include{PREAMBULE/preambule}
+\include{PREAMBULE/preambule2}
+\frontmatter
+% *********************** ABSTRACT ***********************************************
+\include{abstract}
+%************************** REMERCIMENTS ********************************************
+\include{remerciements}
+% *********************** Adding TOC and List of Figures ***********************
+\dominitoc
+\tableofcontents
+\thispagestyle{plain}
+\addcontentsline{toc}{chapter}{Table des matières}
+
+\newpage
+%\thispagestyle{empty}
+%\null
+%\newpage
+
+\listoffigures
+\thispagestyle{plain}
+\addcontentsline{toc}{chapter}{Liste des figures}
+
+\newpage
+%\thispagestyle{empty}
+%\null
+%\newpage
+
+\listoftables
+\thispagestyle{plain}
+\addcontentsline{toc}{chapter}{Table des tableaux}
+
+
+% ******************************** Main Matter *********************************
+%******************************************************************************
+\mainmatter
+\include{introduction}
+\include{chapitre1}
+\include{chapitre2}
+\include{chapitre3}
+\include{chapitre4}
+\include{conclusion}
+% ********************************** Bibliographie ********************************
+%\bibliographystyle{apalike}
+%\bibliographystyle{unsrtnat}
+%\bibliography{memoire_cay}
+\printbibliography
+% ********************************** Appendices ********************************
+\begin{appendices}
+\include{annexe1}
+%\include{annexe2}
+\include{annexe3}
+\end{appendices}
+% *************************************** Index ********************************
+% \printthesisindex % If index is present
+
+\end{document}

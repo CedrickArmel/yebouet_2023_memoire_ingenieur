@@ -1,0 +1,62 @@
+\chapter{Comprendre la blockchain} \label{annexe:comprendre la blockchain}
+\section{Réseau Peer-to-peer (P2P)} \label{ansec:p2p}
+
+
+Un réseau peer-to-peer (P2P), ou réseau pair à pair, est un type de réseau informatique dans lequel chaque ordinateur (appelé un "pair" ou "nœud") est à la fois un client et un serveur. Cela signifie que chaque nœud du réseau peut fonctionner à la fois comme un fournisseur et un consommateur de ressources, ce qui peut inclure des données, du contenu ou de la bande passante.
+
+Les réseaux P2P sont souvent contrastés avec les réseaux client-serveur traditionnels, où une poignée de serveurs centralisés fournissent des ressources à de nombreux clients. Au lieu de cela, les réseaux P2P sont décentralisés, sans autorité centrale ou point de contrôle unique.
+
+Les réseaux P2P sont largement utilisés dans de nombreux domaines. Par exemple, ils sont la base de nombreux systèmes de partage de fichiers, comme BitTorrent, ainsi que de technologies de registres distribués comme la blockchain.
+
+
+\section{Technologies de régistre distribué} \label{ansec:dlt}
+
+
+La technologie de registres distribués, ou Distributed Ledger Technology (DLT) en anglais, désigne un type de base de données distribuée dans laquelle les informations sont stockées à travers de nombreux nœuds sur un réseau, sans autorité centrale. Les DLT permettent d'enregistrer, de partager et de synchroniser les transactions dans leurs multiples sites géographiques, sans avoir besoin d'un point de contrôle central. Les DLT fonctionnent donc sur le principe des réseaux P2P.
+
+L'origine précise des DLT est difficile à déterminer. Rajesh Dhuddu et al. (2022) attribuent sa première esquisse à Staurt Haberc et W. Scottc Stornetta en 1991. Cependant, la première mise en œuvre de ce concept à grande échelle est généralement attribuée à la création de la blockchain Bitcoin par un individu ou un groupe connu sous le pseudonyme de Satoshi Nakamoto en 2008.
+
+\begin{tcolorbox}
+\textbf{Composante élémentaire d'une DLT :  Le noeud}
+
+Un nœud, dans le contexte des réseaux informatiques et plus particulièrement des technologies de registres distribués (DLT), fait référence à un point de connexion, une intersection ou un terminal au sein de ce réseau.
+Chaque nœud est un ordinateur qui participe au réseau et exécute le logiciel qui lui permet de communiquer avec les autres nœuds.
+
+Dans un réseau DLT, un nœud peut avoir différentes responsabilités en fonction de sa nature.
+
+\end{tcolorbox}
+
+\section{Cryptographie} \label{ansec:cryptographie}
+
+
+La cryptographie, ou cryptologie, est la pratique et l'étude des techniques qui permettent de sécuriser les communications en dissimulant les informations à l'abri des pirates informatiques malveillants. Elle est fondée sur le principe de transformer une information ordinaire, information brute, en un format inintelligible, souvent appelé information chiffrée, à l'aide d'algorithmes spécifiques. Seules les parties concernées qui possèdent la clé de déchiffrement adéquate peuvent convertir l'information chiffrée en sa forme originale, un processus appelé décryptage.
+
+Dans le contexte des blockchains, la cryptographie joue un rôle crucial dans la garantie de l'intégrité, la confidentialité et la sécurité des données. C'est la cryptographie qui permet aux blockchains de fonctionner de manière décentralisée et sécurisée, sans l'intervention d'une autorité centrale. Elle est utilisée de plusieurs façons spécifiques :
+
+\begin{itemize}
+    \item \textbf{Hashing} : Les blockchains utilisent des fonctions de hachage cryptographiques pour créer des "empreintes" uniques de données. Ces fonctions produisent un hash, qui est une série de lettres et de chiffres qui semblent aléatoires, mais sont en réalité uniquement liés aux données d'origine. Dans une blockchain, chaque bloc contient le hash du bloc précédent, créant ainsi une chaîne ininterrompue de blocs.
+    
+    \item \textbf{Signatures numériques} : Grâce à l'utilisation de la cryptographie à clé publique (aussi appelée cryptographie asymétrique), les blockchains permettent la création de signatures numériques. Ces signatures assurent l'authenticité et la non-répudiation des transactions, c'est-à-dire qu'elles permettent de prouver qu'une transaction a été créée par une entité particulière et n'a pas été modifiée depuis sa création.
+    \item \textbf{Adresses de portefeuille} :  Les adresses de portefeuille, qui sont les identifiants utilisés pour participer à une blockchain, sont créées à partir de clés publiques par l'intermédiaire d'une fonction de hachage. Cela ajoute un niveau supplémentaire de sécurité.
+\end{itemize}
+
+
+\section{Mécanisme de consensus} \label{ansec:meca_consensus}
+
+Les mécanismes de consensus sont au cœur de la technologie blockchain et constituent l'un de ses aspects les plus essentiels. Le terme "mécanisme de consensus" désigne le processus par lequel les noeuds d'un réseau parviennent à un accord sur l'authenticité d'une transaction.
+
+Les mécanismes de consensus assurent que plusieurs validateurs \footnote{Un validateur est noeud d'une blockchain qui participe au mécanisme de consenus.} participent à la validation des transactions de manière systématique et prédéterminée, garantissant ainsi la décentralisation et l'objectivité de la prise de décision. Ce processus est essentiel pour mettre en œuvre les caractéristiques clés de la Blockchain, telles que l'augmentation de la confiance, l'immuabilité des transactions et le maintien de l'intégrité de la base de données.
+
+Il existe plusieurs familles de mécanismes de consensus, chacune avec ses propres caractéristiques et avantages. Deux des approches les plus couramment utilisées sont le \textit{Proof of Work (PoW)} et le \textit{Proof of Stake (PoS)}. Le \textit{PoW} est le mécanisme sous-jacent à des blockchains telles que Bitcoin et repose sur la résolution de problèmes complexes par les mineurs pour valider les transactions et ajouter des blocs à la chaîne. En revanche, le \textit{PoS} attribue le droit de valider les transactions en fonction de la possession de tokens de cryptomonnaie, réduisant ainsi la consommation d'énergie et les besoins en puissance de calcul.
+
+\section{Tolérance aux pannes byzantines} \label{ansec:bft}
+
+Une faute byzantine, connue sous divers noms tels que "problème des généraux byzantins" ou "défaillance byzantine", se réfère à une situation dans les systèmes informatiques distribués où des composants peuvent subir des pannes et où les informations sur ces pannes peuvent être peu fiables. Cette notion tire son origine de l'allégorie du "problème des généraux byzantins", illustrant le défi de parvenir à un consensus parmi les acteurs du système malgré la présence d'éléments non fiables.
+
+Une défaillance byzantine se produit lorsque des composants affichent des comportements incohérents, apparaissant simultanément en panne et en état de fonctionnement selon différentes sources. Cette ambivalence complique la détection des défaillances et leur exclusion du réseau, car un consensus doit d'abord être atteint sur l'identification des composants défaillants.
+
+La tolérance aux pannes byzantines (\textit{Byzantin Fault Tolerance ou BFT}) fait référence à la capacité d'un système informatique à résister aux pannes même en présence de comportements défaillants ou malveillants. Cela implique de concevoir des mécanismes qui permettent aux composants du système de coordonner leurs actions malgré l'incertitude et la possible défaillance de certains acteurs.
+
+Un mécanisme de consensus \textit{BFT} permet au réseau de continuer à fonctionner correctement même en présence de ces comportements défaillants. Le protocole OKP4, en utilisant l'algorithme \textit{BFT} de \textit{Tendermint Core}, garantit un haut degré de sécurité et de finalité dans la validation des transactions et la mise à jour de l'état du système. \textit{Tendermint Core} est une composante du \textit{Cosmos SDK} qui implémente un mécanisme de consensus de type \textit{BFT-PoS}.
+
+L'efficacité et la fiabilité d'une application blockchain dépendent en grande partie de la robustesse et de la fiabilité du mécanisme de consensus qu'elle utilise.
